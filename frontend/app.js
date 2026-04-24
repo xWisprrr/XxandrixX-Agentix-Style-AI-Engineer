@@ -135,10 +135,14 @@ function handleServerMessage(msg) {
     case 'file_created':
     case 'file_updated': {
       const isNew = event === 'file_created';
-      state.files[data.path] = data.content;
-      renderFileTree();
-      const verb = isNew ? 'Created' : 'Updated';
-      addTerminalLine(`  ${isNew ? '+' : '~'} ${verb}: ${data.path} (${data.size} bytes)`, isNew ? 'success' : 'info');
+      const filePath = String(data.path || '');
+      // Guard against prototype pollution via crafted path keys
+      if (filePath && filePath !== '__proto__' && filePath !== 'constructor' && filePath !== 'prototype') {
+        state.files[filePath] = data.content;
+        renderFileTree();
+        const verb = isNew ? 'Created' : 'Updated';
+        addTerminalLine(`  ${isNew ? '+' : '~'} ${verb}: ${filePath} (${data.size} bytes)`, isNew ? 'success' : 'info');
+      }
       break;
     }
 

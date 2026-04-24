@@ -309,10 +309,11 @@ class Orchestrator:
         full_path = self.session.project_dir / gf.path
         full_path.parent.mkdir(parents=True, exist_ok=True)
         full_path.write_text(gf.content, encoding="utf-8")
+
+        # Determine if it's new or updated before updating session.files
+        is_new = gf.path not in self.session.files
         self.session.files[gf.path] = gf.content
 
-        # Determine if it's new or updated
-        is_new = gf.path not in self.session.files
         event = EventType.FILE_CREATED if is_new else EventType.FILE_UPDATED
         await self._emit(
             event,
@@ -324,8 +325,6 @@ class Orchestrator:
             },
             AgentRole.CODER,
         )
-        # Always update session files map
-        self.session.files[gf.path] = gf.content
         # Emit updated file tree
         await self._emit_file_tree()
 
