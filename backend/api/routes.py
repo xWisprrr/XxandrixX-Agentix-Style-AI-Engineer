@@ -34,8 +34,10 @@ class ChatRequest(BaseModel):
 
 
 def _workspace_path(session_id: str) -> str:
-    base = os.getenv("WORKSPACE_DIR", "./workspaces")
-    return os.path.join(base, session_id)
+    # Sanitize session_id to prevent path traversal
+    safe_id = os.path.basename(session_id)
+    base = os.path.abspath(os.getenv("WORKSPACE_DIR", "./workspaces"))
+    return os.path.join(base, safe_id)
 
 
 async def _run_task_background(session_id: str, message: str) -> None:
@@ -80,6 +82,10 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks) -> JSONR
 @router.get("/sessions/{session_id}/files")
 async def list_files(session_id: str) -> JSONResponse:
     workspace = _workspace_path(session_id)
+    # Guard: workspace must be under base dir
+    base = os.path.abspath(os.getenv("WORKSPACE_DIR", "./workspaces"))
+    if not workspace.startswith(base):
+        raise HTTPException(status_code=403, detail="Invalid session")
     if not os.path.isdir(workspace):
         return JSONResponse({"files": []})
     files = _fs.list_files(workspace)

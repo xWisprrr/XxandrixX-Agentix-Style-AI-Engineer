@@ -33,7 +33,7 @@ class Coder:
         self._model = os.getenv("OPENAI_MODEL", "gpt-4o")
         self._fs = FileSystemTool()
 
-    def _get_client(self):
+    def _get_client(self) -> AsyncOpenAI:
         if self._client is None:
             self._client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         return self._client

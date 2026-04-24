@@ -14,7 +14,7 @@ const app = (() => {
   function getOrCreateSessionId() {
     let id = localStorage.getItem('agentix_session_id');
     if (!id) {
-      id = 'sess_' + Math.random().toString(36).slice(2, 11) + '_' + Date.now();
+      id = 'sess_' + (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, '') : Date.now().toString(36) + Math.random().toString(36).slice(2));
       localStorage.setItem('agentix_session_id', id);
     }
     return id;
@@ -23,7 +23,8 @@ const app = (() => {
   // ── WebSocket ──────────────────────────────────────────
   function connect() {
     sessionId = getOrCreateSessionId();
-    const wsUrl = `ws://${location.host}/ws/${sessionId}`;
+    const wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${wsProto}//${location.host}/ws/${sessionId}`;
 
     setConnectionStatus('connecting');
 

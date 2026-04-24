@@ -25,7 +25,7 @@ app = FastAPI(title="Agentix AI Engineer", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,7 +66,9 @@ if os.path.isdir(FRONTEND_DIR):
 
     @app.get("/{full_path:path}")
     async def serve_static(full_path: str) -> FileResponse:
-        file_path = os.path.join(FRONTEND_DIR, full_path)
-        if os.path.isfile(file_path):
-            return FileResponse(file_path)
+        # Resolve and guard against path traversal
+        safe_root = os.path.abspath(FRONTEND_DIR)
+        resolved = os.path.normpath(os.path.join(safe_root, full_path))
+        if resolved.startswith(safe_root) and os.path.isfile(resolved):
+            return FileResponse(resolved)
         return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
