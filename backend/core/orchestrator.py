@@ -4,16 +4,18 @@ import asyncio
 import logging
 import os
 from datetime import datetime
-from typing import Any, Awaitable, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, List, Optional
 
 from backend.agents.coder import Coder
 from backend.agents.debugger import Debugger
 from backend.agents.planner import Planner
 from backend.agents.tester import Tester
-from backend.core.conversation import ConversationController  # noqa: F401 (imported for type completeness)
 from backend.core.state_machine import StateMachine, TaskState
 from backend.core.task_schema import AgentEvent, ExecutionResult, Task, TaskStatus, StepStatus
 from backend.execution.sandbox import Sandbox
+
+if TYPE_CHECKING:
+    from backend.core.conversation import ConversationController
 
 logger = logging.getLogger(__name__)
 
