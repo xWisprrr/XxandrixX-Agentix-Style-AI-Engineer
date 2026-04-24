@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentix — AI Software Engineer</title>
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <span class="brand-icon">⚡</span>
+        <span class="brand-name">Agentix</span>
+        <span class="brand-subtitle">AI Software Engineer</span>
+      </div>
+      <div class="agent-status-bar">
+        <div class="agent-badge" id="agent-planner">
+          <span class="status-dot"></span>
+          <span>Planner</span>
+        </div>
+        <div class="agent-badge" id="agent-coder">
+          <span class="status-dot"></span>
+          <span>Coder</span>
+        </div>
+        <div class="agent-badge" id="agent-tester">
+          <span class="status-dot"></span>
+          <span>Tester</span>
+        </div>
+        <div class="agent-badge" id="agent-debugger">
+          <span class="status-dot"></span>
+          <span>Debugger</span>
+        </div>
+        <div class="connection-status" id="connection-status">
+          <span class="status-dot"></span>
+          <span id="connection-label">Connecting…</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main layout: sidebar | chat | terminal -->
+    <main class="main-layout">
+      <!-- Left: File Tree -->
+      <aside class="panel panel-files" id="panel-files">
+        <div class="panel-header">
+          <span class="panel-title">📁 Workspace Files</span>
+          <button class="icon-btn" id="btn-refresh-files" title="Refresh">↻</button>
+        </div>
+        <div class="file-tree" id="file-tree">
+          <div class="empty-state">No files yet</div>
+        </div>
+      </aside>
+
+      <!-- Center: Chat -->
+      <section class="panel panel-chat">
+        <div class="panel-header">
+          <span class="panel-title">💬 Chat</span>
+          <button class="icon-btn" id="btn-clear-chat" title="Clear chat">✕</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="welcome-message">
+            <h2>Welcome to Agentix</h2>
+            <p>Describe a software engineering task and I'll plan, code, test, and debug it for you.</p>
+            <div class="example-prompts">
+              <p class="example-label">Try asking:</p>
+              <button class="example-btn" onclick="app.fillPrompt('Write a Python script that generates Fibonacci numbers up to n')">Write a Fibonacci script</button>
+              <button class="example-btn" onclick="app.fillPrompt('Create a simple REST API mock server in Python with Flask')">Create a REST API mock</button>
+              <button class="example-btn" onclick="app.fillPrompt('Write a JavaScript function to sort an array of objects by a given key')">Sort array of objects</button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="input-row">
+            <textarea
+              id="chat-input"
+              class="chat-textarea"
+              placeholder="Describe a software engineering task…"
+              rows="3"
+            ></textarea>
+            <button class="send-btn" id="btn-send" title="Send (Ctrl+Enter)">
+              <span id="send-icon">▶</span>
+            </button>
+          </div>
+          <div class="input-hint">Ctrl+Enter to send</div>
+        </div>
+      </section>
+
+      <!-- Right: Terminal / Logs -->
+      <aside class="panel panel-terminal" id="panel-terminal">
+        <div class="panel-header">
+          <span class="panel-title">⚙ Execution Log</span>
+          <button class="icon-btn" id="btn-clear-terminal" title="Clear logs">✕</button>
+        </div>
+        <div class="terminal-output" id="terminal-output"></div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- File viewer modal -->
+  <div class="modal-overlay" id="file-modal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-file-path"></span>
+        <button class="icon-btn" id="btn-close-modal">✕</button>
+      </div>
+      <pre class="modal-content" id="modal-file-content"></pre>
+    </div>
+  </div>
+
+  <script src="/js/terminal.js"></script>
+  <script src="/js/chat.js"></script>
+  <script src="/js/filetree.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
