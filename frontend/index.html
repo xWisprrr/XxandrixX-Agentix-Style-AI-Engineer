@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentix — AI Software Engineer</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+      </svg>
+      Agentix
+      <span class="header-subtitle">AI Software Engineer</span>
+    </div>
+
+    <div class="header-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-label" id="statusLabel">Connecting…</span>
+      <span class="project-id" id="projectId">—</span>
+    </div>
+  </header>
+
+  <!-- ── Left Sidebar — File Tree ── -->
+  <aside class="sidebar">
+    <div class="panel-header">
+      <svg viewBox="0 0 16 16" fill="currentColor">
+        <path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1zM1.5 2.75v10.5c0 .138.112.25.25.25H14.25a.25.25 0 00.25-.25V2.75a.25.25 0 00-.25-.25H1.75a.25.25 0 00-.25.25z"/>
+      </svg>
+      Project Files
+    </div>
+    <div class="file-tree" id="fileTree">
+      <div class="file-tree-empty">Files will appear here as they're generated.</div>
+    </div>
+  </aside>
+
+  <!-- ── Main — Chat ── -->
+  <main class="main">
+    <div class="agent-status-bar hidden" id="agentStatusBar">
+      <div class="spinner"></div>
+      <span id="agentStatusText">Working…</span>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+      <!-- Messages injected by JS -->
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea
+          id="chatInput"
+          class="chat-input"
+          placeholder="Tell me what to build… (e.g. 'Build a task manager SaaS with auth and a dashboard')"
+          rows="1"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" title="Send (Enter)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="input-hints" id="inputHints">
+        <span class="hint-chip">Build a REST API with auth</span>
+        <span class="hint-chip">Create a CLI todo app</span>
+        <span class="hint-chip">Make a web scraper</span>
+        <span class="hint-chip">Build a SaaS dashboard</span>
+        <span class="hint-chip">Write a Python Flask app</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── Right Panel — Terminal + Plan ── -->
+  <aside class="rightpanel">
+    <div class="panel-tabs">
+      <div class="panel-tab active" data-tab="terminal">⬛ Terminal</div>
+      <div class="panel-tab" data-tab="plan">📋 Plan</div>
+    </div>
+
+    <div class="panel-content">
+      <!-- Terminal -->
+      <div class="panel-pane active" id="pane-terminal">
+        <div class="terminal" id="terminal">
+          <span class="terminal-line info">Agentix sandbox ready. Waiting for instructions…</span>
+          <span class="terminal-line info">──────────────────────────────────────────────</span>
+          <span class="terminal-cursor"></span>
+        </div>
+      </div>
+
+      <!-- Plan -->
+      <div class="panel-pane" id="pane-plan">
+        <div class="plan-pane" id="planPane">
+          <div class="plan-empty">Your project plan will appear here once you start building.</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- ── File Viewer Overlay ── -->
+<div class="file-viewer-overlay" id="fileViewerOverlay">
+  <div class="file-viewer">
+    <div class="file-viewer-header">
+      <span class="file-viewer-path" id="fileViewerPath"></span>
+      <button class="file-viewer-close" id="fileViewerClose">✕</button>
+    </div>
+    <div class="file-viewer-content">
+      <pre id="fileViewerContent"></pre>
+    </div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
