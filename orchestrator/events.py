@@ -121,3 +121,58 @@ class CommandOutputEvent(OrchestratorEvent):
     """Emitted when a terminal command produces stdout/stderr output."""
 
     event_type: Literal["command_output"] = "command_output"
+
+
+# ---------------------------------------------------------------------------
+# v2 events — reactive runtime and live agent experience
+# ---------------------------------------------------------------------------
+
+
+class AgentThinkingEvent(OrchestratorEvent):
+    """Emitted to stream the agent's reasoning narration to the frontend.
+
+    ``payload`` should contain at least a ``"message"`` key with a short
+    human-readable description of what the agent is currently doing, and an
+    optional ``"agent"`` key identifying the active agent role
+    (e.g. ``"planner"``, ``"coder"``, ``"debugger"``).
+    """
+
+    event_type: Literal["agent_thinking"] = "agent_thinking"
+
+
+class ExecutionAnomalyDetectedEvent(OrchestratorEvent):
+    """Emitted when the ReactiveLoop detects an anomaly after a step.
+
+    ``payload`` expected keys:
+
+    * ``anomaly_type`` — one of ``"repeated_failure"``,
+      ``"unexpected_output"``, ``"dependency_mismatch"``.
+    * ``details`` — human-readable description of the anomaly.
+    * ``affected_step_id`` — the step ID that triggered detection.
+    """
+
+    event_type: Literal["execution_anomaly_detected"] = "execution_anomaly_detected"
+
+
+class TaskGraphRewrittenEvent(OrchestratorEvent):
+    """Emitted when the ReactiveLoop rewrites remaining TaskGraph steps.
+
+    ``payload`` expected keys:
+
+    * ``rewritten_steps`` — count of steps mutated.
+    * ``reason`` — brief explanation of why re-planning was triggered.
+    * ``remaining_steps`` — list of step IDs still to be executed.
+    """
+
+    event_type: Literal["taskgraph_rewritten"] = "taskgraph_rewritten"
+
+
+class ProjectStateUpdatedEvent(OrchestratorEvent):
+    """Emitted after the ProjectStateGraph is updated.
+
+    ``payload`` should contain the output of
+    :meth:`~runtime.project_state_graph.ProjectStateGraph.get_context` or
+    a lightweight summary thereof.
+    """
+
+    event_type: Literal["project_state_updated"] = "project_state_updated"
