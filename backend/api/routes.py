@@ -81,14 +81,14 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks) -> JSONR
 
 @router.get("/sessions/{session_id}/files")
 async def list_files(session_id: str) -> JSONResponse:
-    workspace = _workspace_path(session_id)
-    # Guard: workspace must be under base dir
     base = os.path.abspath(os.getenv("WORKSPACE_DIR", "./workspaces"))
-    if not workspace.startswith(base):
+    workspace = _workspace_path(session_id)
+    resolved = os.path.realpath(workspace)
+    if not resolved.startswith(base):
         raise HTTPException(status_code=403, detail="Invalid session")
-    if not os.path.isdir(workspace):
+    if not os.path.isdir(resolved):
         return JSONResponse({"files": []})
-    files = _fs.list_files(workspace)
+    files = _fs.list_files(resolved)
     return JSONResponse({"files": files})
 
 
@@ -121,9 +121,11 @@ async def get_history(session_id: str) -> JSONResponse:
 
 @router.delete("/sessions/{session_id}")
 async def delete_session(session_id: str) -> JSONResponse:
+    base = os.path.abspath(os.getenv("WORKSPACE_DIR", "./workspaces"))
     _session_memory.clear_session(session_id)
     workspace = _workspace_path(session_id)
-    if os.path.isdir(workspace):
-        shutil.rmtree(workspace, ignore_errors=True)
+    resolved = os.path.realpath(workspace)
+    if resolved.startswith(base) and os.path.isdir(resolved):
+        shutil.rmtree(resolved, ignore_errors=True)
     manager.disconnect(session_id)
     return JSONResponse({"status": "deleted", "session_id": session_id})

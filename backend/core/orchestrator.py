@@ -10,6 +10,7 @@ from backend.agents.coder import Coder
 from backend.agents.debugger import Debugger
 from backend.agents.planner import Planner
 from backend.agents.tester import Tester
+from backend.core.conversation import ConversationController  # noqa: F401 (imported for type completeness)
 from backend.core.state_machine import StateMachine, TaskState
 from backend.core.task_schema import AgentEvent, ExecutionResult, Task, TaskStatus, StepStatus
 from backend.execution.sandbox import Sandbox
@@ -83,7 +84,8 @@ class Orchestrator:
                     await emit("agent_status", {"agent": "coder", "state": "idle"})
 
                     # Sandbox execution
-                    sm.transition(TaskState.TESTING) if sm.can_transition(TaskState.TESTING) else None
+                    if sm.can_transition(TaskState.TESTING):
+                        sm.transition(TaskState.TESTING)
                     await emit("agent_status", {"agent": "tester", "state": "active"})
 
                     result: ExecutionResult = await self._sandbox.run(
@@ -144,7 +146,6 @@ class Orchestrator:
                             break
 
             # Generate summary
-            from backend.core.conversation import ConversationController
             summary = await self._generate_summary(task, session_id)
             task.result_summary = summary
             task.status = TaskStatus.COMPLETE

@@ -17,8 +17,13 @@ const terminal = (() => {
     if (!output) return;
 
     const lines = String(message).split('\n');
-    lines.forEach(line => {
-      if (!line && lines.length > 1) return; // skip empty lines in multi-line output
+    // Trim only leading/trailing blank lines while preserving interior structure
+    let start = 0;
+    let end = lines.length - 1;
+    while (start <= end && lines[start].trim() === '') start++;
+    while (end >= start && lines[end].trim() === '') end--;
+    const trimmed = lines.slice(start, end + 1);
+    trimmed.forEach(line => {
 
       const el = document.createElement('div');
       el.className = `log-line ${level}`;

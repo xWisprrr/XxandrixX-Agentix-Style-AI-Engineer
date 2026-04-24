@@ -22,14 +22,18 @@ class FileSystemTool:
             return await fh.read()
 
     def list_files(self, workspace: str) -> List[str]:
+        safe_root = os.path.realpath(workspace)
         result = []
-        for root, dirs, files in os.walk(workspace):
+        for root, dirs, files in os.walk(safe_root):
             # Skip hidden directories
             dirs[:] = [d for d in dirs if not d.startswith(".")]
             for fname in files:
                 if not fname.startswith("."):
                     full_path = os.path.join(root, fname)
-                    result.append(os.path.relpath(full_path, workspace))
+                    # Ensure the resolved path is still within the workspace
+                    resolved = os.path.realpath(full_path)
+                    if resolved.startswith(safe_root):
+                        result.append(os.path.relpath(resolved, safe_root))
         return sorted(result)
 
     def create_directory(self, path: str) -> None:

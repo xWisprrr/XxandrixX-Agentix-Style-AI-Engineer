@@ -11,10 +11,20 @@ const app = (() => {
   let isWorking = false;
 
   // ── Session ID ─────────────────────────────────────────
+  function generateSessionId() {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return 'sess_' + crypto.randomUUID().replace(/-/g, '');
+    }
+    // Fallback: use crypto.getRandomValues for cryptographic randomness
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return 'sess_' + Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   function getOrCreateSessionId() {
     let id = localStorage.getItem('agentix_session_id');
     if (!id) {
-      id = 'sess_' + (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, '') : Date.now().toString(36) + Math.random().toString(36).slice(2));
+      id = generateSessionId();
       localStorage.setItem('agentix_session_id', id);
     }
     return id;
